@@ -30,6 +30,7 @@ import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
 import com.github.stkent.bugshaker.ActivityReferenceManager;
+import com.github.stkent.bugshaker.EditActivity;
 import com.github.stkent.bugshaker.flow.dialog.DialogProvider;
 import com.github.stkent.bugshaker.flow.email.screenshot.ScreenshotProvider;
 import com.github.stkent.bugshaker.utilities.ActivityUtils;
@@ -110,7 +111,10 @@ public final class FeedbackEmailFlowManager {
 
                                 @Override
                                 public void onNext(final Uri uri) {
-                                    sendEmailWithScreenshot(activity, uri);
+                                    Intent editIntent = new Intent(activity, EditActivity.class);
+                                    editIntent.putExtra("screenShotUri", uri);
+                                    activity.startActivity(editIntent);
+                                    //sendEmailWithScreenshot(activity, uri);
                                 }
                             });
                 } else {
@@ -227,7 +231,7 @@ public final class FeedbackEmailFlowManager {
         final List<ResolveInfo> resolveInfoList = applicationContext.getPackageManager()
                 .queryIntentActivities(feedbackEmailIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
-        for (final ResolveInfo receivingApplicationInfo: resolveInfoList) {
+        for (final ResolveInfo receivingApplicationInfo : resolveInfoList) {
             // FIXME: revoke these permissions at some point!
             applicationContext.grantUriPermission(
                     receivingApplicationInfo.activityInfo.packageName,
